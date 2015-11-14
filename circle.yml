@@ -1,0 +1,21 @@
+# CircleCI automated build
+---
+machine:
+  services:
+    - docker
+dependencies:
+  override:
+    - docker info
+    - docker version
+    - make build OWNER=$DOCKER_USER
+test:
+  override:
+    - make info OWNER=$DOCKER_USER
+deployment:
+  hub:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - make push OWNER=$DOCKER_USER
+      - docker logout
+      - make clean OWNER=$DOCKER_USER

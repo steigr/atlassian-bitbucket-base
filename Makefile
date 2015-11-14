@@ -18,6 +18,9 @@ bitbucket-base-%:
 && rm Dockerfile.tmp
 	docker tag --force "$(IMAGE):$(version)" "$(IMAGE):latest" 
 
+info: build
+	$(foreach image,$(shell docker images | grep -e "^$(IMAGE)\s" | awk '{print $$1 ":" $$2}'),docker inspect $(image);)
+
 push: build
 	$(foreach image,$(shell docker images | grep -e "^$(IMAGE)\s" | awk '{print $$1 ":" $$2}'),docker push $(image);)
 
